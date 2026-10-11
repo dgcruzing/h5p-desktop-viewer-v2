@@ -1,0 +1,34 @@
+H5P frame assets -- third-party notice
+
+These files are the H5P runtime that <h5p-player> loads inside its frame. They were copied
+from h5p-standalone 3.8.2 (https://github.com/tunapanda/h5p-standalone,
+tag v3.8.2) by @missing-elements/h5p-offline-player 0.3.1: the scripts' code
+unmodified, each given a leading licence comment,
+the stylesheet rebuilt so that it stands alone: its icon fonts and images inlined as data URLs,
+its Inter and Open Sans faces moved to fonts/ and declared by the frame document instead. They are NOT covered by
+that package's MIT licence. Keep this file and LICENSE.txt beside them when you copy or serve
+the directory.
+
+frame.bundle.js
+  - H5P core: h5p.js, h5p-event-dispatcher.js, h5p-x-api.js, h5p-x-api-event.js,
+    h5p-content-type.js, h5p-confirmation-dialog.js, request-queue.js, h5p-action-bar.js,
+    h5p-tooltip.js, from https://github.com/h5p/h5p-php-library (vendor/h5p/js/ in
+    h5p-standalone). GNU General Public License v3.0 -- LICENSE.txt in this directory.
+  - jQuery 3.5.1. MIT, Copyright JS Foundation and other contributors, https://jquery.org/license
+  - h5p-standalone's own frame code. MIT, Copyright (c) 2015 Tunapanda.
+
+h5p.css
+  - H5P core styles/h5p.css, with the h5p-core-30, h5p-hub-publish and h5p-theme icon fonts and
+    images/throbber.gif inlined. Same origin, GNU General Public License v3.0 -- LICENSE.txt.
+
+fonts/inter-*     Inter, SIL Open Font License 1.1 -- fonts/Inter-LICENSE.txt
+fonts/open-sans-* Open Sans, SIL Open Font License 1.1 -- fonts/OpenSans-OFL.txt
+
+main.bundle.js
+  - h5p-standalone. MIT, Copyright (c) 2015 Tunapanda. Includes regenerator-runtime (MIT),
+    named in its own leading comment.
+
+Corresponding source for the GPL parts as built:
+https://github.com/tunapanda/h5p-standalone/tree/v3.8.2 (src/ and vendor/h5p/).
+h5p-standalone does not record which h5p-php-library revision vendor/h5p/ was taken from
+(https://github.com/tunapanda/h5p-standalone/issues/188).

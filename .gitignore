@@ -1,0 +1,15 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+session.json
+browser-profile/
+.playwright-cli/
+output/
+screenshots/
+audit/
+packages/*
+!packages/.gitkeep
+*.h5p
+*.zip

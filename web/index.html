@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; worker-src 'self' blob:; child-src 'self'; frame-src 'self'; img-src 'self' data: blob:"><title>H5P Desktop Viewer · V2</title><style>
+body{margin:0;font:14px system-ui,sans-serif;color:#1f2937;background:#f8fafc;display:flex;height:100vh;overflow:hidden}
+aside{width:280px;min-width:200px;border-right:1px solid #dbe3ea;background:#fff;display:flex;flex-direction:column;overflow:hidden}
+aside header{padding:.6rem .8rem;border-bottom:1px solid #dbe3ea;font-weight:700;font-size:15px;color:#123b35}
+aside header span{display:block;font-weight:400;font-size:11px;color:#52606d;margin-top:2px}
+#pkg-list{flex:1;overflow-y:auto;padding:.4rem}
+.pkg-item{padding:.5rem .6rem;border-radius:6px;cursor:pointer;margin-bottom:2px;font-size:13px;line-height:1.3}
+.pkg-item:hover{background:#eef2f7}
+.pkg-item.active{background:#123b35;color:#fff}
+.pkg-item .pkg-title{font-weight:600;display:block}
+.pkg-item .pkg-meta{font-size:11px;opacity:.7;display:block;margin-top:2px}
+#pkg-empty{padding:1rem;color:#52606d;font-size:12px;text-align:center}
+#sidebar-footer{padding:.5rem .8rem;border-top:1px solid #dbe3ea;font-size:11px;color:#52606d}
+#sidebar-footer button{width:100%;padding:.35rem;border:1px solid #9aaabd;border-radius:4px;background:#fff;cursor:pointer;font-size:12px;margin-top:4px}
+#sidebar-footer button:hover{background:#eef2f7}
+main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+header.topbar{display:flex;align-items:center;gap:.75rem;padding:.45rem .8rem;border-bottom:1px solid #dbe3ea;background:#fff}
+#pkg-name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#status{color:#52606d;font-size:12px}
+.topbar button{margin-left:auto;padding:.3rem .65rem;border:1px solid #9aaabd;border-radius:4px;background:#fff;cursor:pointer;font-size:12px}
+.topbar button:hover{background:#eef2f7}
+#player-area{flex:1;position:relative;overflow:hidden}
+h5p-player{display:block;width:100%;height:100%;min-height:240px}
+#bottom-panel{height:180px;min-height:80px;border-top:2px solid #dbe3ea;background:#fff;display:flex;overflow:hidden}
+#bottom-panel .tab-bar{width:120px;border-right:1px solid #dbe3ea;display:flex;flex-direction:column}
+.tab-bar button{padding:.5rem .6rem;border:none;background:none;text-align:left;cursor:pointer;font-size:12px;border-bottom:1px solid #eef2f7;color:#52606d}
+.tab-bar button.active{background:#123b35;color:#fff}
+.tab-bar button:hover:not(.active){background:#eef2f7}
+.tab-content{flex:1;overflow:auto;padding:.5rem;font-size:12px;font-family:'Cascadia Code',Consolas,monospace;white-space:pre-wrap;word-break:break-word}
+#xapi-log,#score-log,#event-log{display:none}
+#xapi-log.active,#score-log.active,#event-log.active{display:block}
+.empty-msg{color:#9aaabd;padding:1rem;text-align:center}
+.score-row{padding:.3rem 0;border-bottom:1px solid #f0f0f0}
+.score-row .score-obj{font-weight:600}
+.score-row .score-val{color:#123b35}
+.score-row .score-raw{color:#52606d;font-size:11px}
+#resize-handle{height:4px;background:#dbe3ea;cursor:ns-resize;flex-shrink:0}
+#resize-handle:hover{background:#123b35}
+#import-zone{margin:12px;padding:18px 12px;border:2px dashed #b8cbc6;border-radius:12px;background:#f4faf7;text-align:center;color:#123b35}
+#import-zone strong{display:block;margin-bottom:7px}#import-zone p{margin:4px 0 12px;font-size:12px;color:#52606d}
+#add-files{background:#123b35;color:white;border:0;border-radius:7px;padding:9px 14px;cursor:pointer}
+#import-status{display:block;font-size:12px;margin:10px 0 0;white-space:pre-line;max-height:150px;overflow:auto;text-align:left}
+body.drag-over #import-zone{border-color:#123b35;background:#d9f3e5;box-shadow:0 0 0 4px #b8e5d3}
+.pkg-item:focus-visible,button:focus-visible{outline:3px solid #d5a13d;outline-offset:2px}
+#welcome{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:35px;background:#f8fafc}
+#welcome h1{font-size:30px;color:#123b35;margin:0 0 12px}#welcome p{color:#52606d;line-height:1.6;max-width:500px}
+[hidden]{display:none!important}#quit-app{margin-left:0}
+</style></head>
+<body>
+<aside>
+  <header>H5P Desktop Viewer<span>V2 · Your local lesson library</span></header>
+  <section id="import-zone" aria-label="Import H5P packages">
+    <strong>Drop your H5P files here</strong>
+    <p>Add several lessons at once.<br>Original files stay where they are.</p>
+    <button id="add-files" type="button">Choose H5P files</button>
+    <input id="file-picker" type="file" accept=".h5p" multiple hidden>
+    <output id="import-status" aria-live="polite"></output>
+  </section>
+  <div id="pkg-list"><div id="pkg-empty">Your library is empty.<br>Drop H5P files above to begin.</div></div>
+  <div id="sidebar-footer">
+    <button id="refresh-pkgs" type="button">Refresh list</button>
+    <button id="clear-xapi" type="button">Clear xAPI log</button>
+  </div>
+</aside>
+<main>
+  <header class="topbar">
+    <span id="pkg-name">No package selected</span>
+    <span id="status">Starting…</span>
+    <button id="reload" type="button">Reload</button>
+    <button id="export-results" type="button">Export results</button>
+    <button id="quit-app" type="button">Quit viewer</button>
+  </header>
+  <div id="player-area">
+    <h5p-player id="player" sw="assets/h5p-sw.js" assets-base="assets/frame-assets/" resume="off"></h5p-player>
+    <section id="welcome"><h1>Your lessons, in one place</h1><p>Drop one or more .h5p files into this window, or choose files from your computer. Then select a lesson from the library.</p></section>
+  </div>
+  <div id="resize-handle"></div>
+  <div id="bottom-panel">
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="event-log">Events</button>
+      <button class="tab-btn" data-tab="xapi-log">xAPI</button>
+      <button class="tab-btn" data-tab="score-log">Scores</button>
+    </div>
+    <div class="tab-content">
+      <div id="event-log" class="active"><span class="empty-msg">No events yet.</span></div>
+      <div id="xapi-log"><span class="empty-msg">No xAPI statements yet.</span></div>
+      <div id="score-log"><span class="empty-msg">No scores yet.</span></div>
+    </div>
+  </div>
+</main>
+<script type="module" src="assets/h5p-player.js"></script>
+<script type="module" src="./app.js"></script>
+</body></html>

@@ -1,0 +1,10 @@
+{
+  "name": "h5p-desktop-viewer-v2",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local desktop H5P package library with drag-and-drop import",
+  "scripts": {
+    "start": "node launch.mjs"
+  }
+}

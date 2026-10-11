@@ -33,3 +33,7 @@ Drop lessons into the window or use Choose H5P files. Imports copy sources; dupl
 - Port or stale page: use the URL from the current launch; old package URLs can expire when switching lessons.
 - No scores: answer a scored interaction. Not every H5P activity emits scored xAPI events.
 - Keep the whole checkout together: player assets are needed at runtime.
+
+## Remove a lesson
+
+Use Remove beside a library lesson to move it into the local `trash/` folder. Removing the active lesson unloads it and clears its session results. To restore it, move the file from `trash/` back to `packages/` and remove the timestamp and UUID prefix from its filename. Trash is excluded from Git.

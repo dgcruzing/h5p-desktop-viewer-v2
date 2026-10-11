@@ -13,3 +13,4 @@ packages/*
 !packages/.gitkeep
 *.h5p
 *.zip
+trash/

@@ -46,6 +46,11 @@ body.drag-over #import-zone{border-color:#123b35;background:#d9f3e5;box-shadow:0
 #welcome{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:35px;background:#f8fafc}
 #welcome h1{font-size:30px;color:#123b35;margin:0 0 12px}#welcome p{color:#52606d;line-height:1.6;max-width:500px}
 [hidden]{display:none!important}#quit-app{margin-left:0}
+.pkg-row{display:flex;align-items:center;gap:4px}
+.pkg-row .pkg-item{flex:1;min-width:0;text-align:left;border:0;background:transparent;color:inherit;font-family:inherit}
+.pkg-row .pkg-item:hover{background:#eef2f7}
+.pkg-row .pkg-item.active{background:#123b35;color:#fff}
+.pkg-remove{font-size:11px;padding:5px;border:1px solid #cbd5e1;border-radius:4px;background:white;color:#7f1d1d;cursor:pointer}
 </style></head>
 <body>
 <aside>

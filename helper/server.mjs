@@ -216,6 +216,36 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // Recover old windows and reopen the active lesson from the launcher root.
+  if (req.method === 'GET' && (pathname === '/' || /^\/[A-Za-z0-9_-]{24}\/index\.html$/.test(pathname))) {
+    const activeURL = current?.file ? `/${current.token}/index.html?generation=${generation}` : '/';
+    const isStale = pathname !== '/' && parts[0] !== current?.token;
+    if ((pathname === '/' && current?.file) || isStale) {
+      res.writeHead(302, { Location: activeURL, 'Cache-Control': 'no-store' });
+      return res.end();
+    }
+  }
+  if (pathname === '/api/remove' && req.method === 'POST') {
+    if (req.headers.origin !== `http://127.0.0.1:${port}`) return sendJson(res, { error: 'Same-origin request required' }, 403);
+    let body; try { body = JSON.parse(await readBody(req)); } catch { return sendJson(res, { error: 'Invalid JSON' }, 400); }
+    const name = body.name;
+    if (typeof name !== 'string' || name.length > 180 || /[\\/<>:"|?*\x00-\x1f]/.test(name) || !/\.h5p$/i.test(name)) return sendJson(res, { error: 'Invalid library filename' }, 400);
+    const file = path.join(packagesDir, name);
+    try {
+      const stat = await fsp.lstat(file);
+      if (!stat.isFile() || stat.isSymbolicLink()) return sendJson(res, { error: 'Only regular library files can be removed' }, 400);
+      const trashDir = path.join(root, 'trash');
+      await fsp.mkdir(trashDir, { recursive: true });
+      const trashName = `${Date.now()}-${crypto.randomUUID()}-${name}`;
+      await fsp.rename(file, path.join(trashDir, trashName));
+      const unloaded = current?.file === file;
+      if (unloaded) {
+        ++generation; responses.delete(res); invalidate(); responses.add(res); xapiLog = [];
+      }
+      return sendJson(res, { ok: true, name, trashName, unloaded });
+    } catch (error) { return sendJson(res, { error: error.code === 'ENOENT' ? 'Lesson is no longer in the library' : 'Could not move lesson to local trash' }, 400); }
+  }
+
   // === Agent API endpoints (no token required) ===
   // GET /api/packages — list packages in the packages directory
   if (parts[0] === 'api' && parts[1] === 'packages' && req.method === 'GET') {

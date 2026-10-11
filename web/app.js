@@ -71,19 +71,32 @@ async function loadPackageList() {
       return;
     }
     for (const pkg of data.packages) {
-      const div = document.createElement('div');
+      const row = document.createElement('div');
+      row.className = 'pkg-row';
+      const div = document.createElement('button');
+      div.type = 'button';
       div.className = 'pkg-item';
-      div.tabIndex = 0;
-      div.setAttribute('role', 'button');
       div.setAttribute('aria-label', pkg.title || pkg.name);
       div.dataset.name = pkg.name;
       const sizeKB = (pkg.size / 1024).toFixed(0);
       div.innerHTML = `<span class="pkg-title">${esc(pkg.title)}</span><span class="pkg-meta">${esc(pkg.name)} &middot; ${sizeKB} KB</span>`;
       div.addEventListener('click', () => loadPackage(pkg.name, div));
-      div.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); loadPackage(pkg.name, div); }
+      const remove = document.createElement('button');
+      remove.type = 'button'; remove.className = 'pkg-remove'; remove.textContent = 'Remove';
+      remove.setAttribute('aria-label', 'Remove ' + pkg.name);
+      remove.title = 'Move this lesson to local trash';
+      remove.addEventListener('click', async () => {
+        remove.disabled = true;
+        try {
+          const res = await fetch('/api/remove', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: pkg.name }) });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || 'Remove failed');
+          logEvent(eventLog, 'Moved to local trash: ' + pkg.name);
+          if (data.unloaded) window.location.href = '/';
+          else await loadPackageList();
+        } catch (error) { setStatus(error.message); remove.disabled = false; }
       });
-      pkgList.appendChild(div);
+      row.append(div, remove); pkgList.appendChild(row);
     }
   } catch (e) {
     pkgList.innerHTML = '<div id="pkg-empty">Cannot reach server.</div>';

@@ -16,7 +16,7 @@ function openWindow(url) {
   if (noBrowser) return;
   const browser = browsers.find(p => fs.existsSync(p));
   if (!browser) throw new Error('Microsoft Edge or Google Chrome is required.');
-  const child = spawn(browser, [`--app=${url}`, `--user-data-dir=${path.join(root, 'browser-profile')}`, '--no-first-run', '--no-default-browser-check'], { detached: true, stdio: 'ignore', windowsHide: true });
+  const child = spawn(browser, [`--app=${url}`, '--start-maximized', `--user-data-dir=${path.join(root, 'browser-profile')}`, '--no-first-run', '--no-default-browser-check'], { detached: true, stdio: 'ignore', windowsHide: true });
   child.on('error', e => fs.appendFileSync(path.join(root, 'launcher-error.log'), `${e.message}\n`));
   child.unref();
 }

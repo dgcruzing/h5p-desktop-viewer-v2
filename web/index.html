@@ -51,6 +51,15 @@ body.drag-over #import-zone{border-color:#123b35;background:#d9f3e5;box-shadow:0
 .pkg-row .pkg-item:hover{background:#eef2f7}
 .pkg-row .pkg-item.active{background:#123b35;color:#fff}
 .pkg-remove{font-size:11px;padding:5px;border:1px solid #cbd5e1;border-radius:4px;background:white;color:#7f1d1d;cursor:pointer}
+/* Allow small app windows to expose the complete activity instead of clipping it. */
+aside{flex:0 0 260px;min-width:180px}
+main{min-width:0;min-height:0}
+header.topbar{flex-wrap:wrap;flex-shrink:0}
+#pkg-name{flex:1 1 220px;min-width:0}
+#player-area{min-height:0;overflow:auto;overscroll-behavior:contain}
+h5p-player{height:auto;min-height:0;overflow:visible}
+#bottom-panel{flex-shrink:0}
+@media(max-width:800px){aside{flex-basis:200px}.topbar{gap:5px}}
 </style></head>
 <body>
 <aside>
@@ -72,6 +81,7 @@ body.drag-over #import-zone{border-color:#123b35;background:#d9f3e5;box-shadow:0
   <header class="topbar">
     <span id="pkg-name">No package selected</span>
     <span id="status">Starting…</span>
+    <button id="toggle-results" type="button" aria-expanded="false">Show results</button>
     <button id="reload" type="button">Reload</button>
     <button id="export-results" type="button">Export results</button>
     <button id="quit-app" type="button">Quit viewer</button>
@@ -80,8 +90,8 @@ body.drag-over #import-zone{border-color:#123b35;background:#d9f3e5;box-shadow:0
     <h5p-player id="player" sw="assets/h5p-sw.js" assets-base="assets/frame-assets/" resume="off"></h5p-player>
     <section id="welcome"><h1>Your lessons, in one place</h1><p>Drop one or more .h5p files into this window, or choose files from your computer. Then select a lesson from the library.</p></section>
   </div>
-  <div id="resize-handle"></div>
-  <div id="bottom-panel">
+  <div id="resize-handle" hidden></div>
+  <div id="bottom-panel" hidden>
     <div class="tab-bar">
       <button class="tab-btn active" data-tab="event-log">Events</button>
       <button class="tab-btn" data-tab="xapi-log">xAPI</button>

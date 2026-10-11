@@ -10,6 +10,14 @@ const bottomPanel = document.getElementById('bottom-panel');
 
 const setStatus = (text) => { statusEl.textContent = text; };
 
+document.querySelector('#toggle-results').addEventListener('click', event => {
+  const hidden = !bottomPanel.hidden;
+  bottomPanel.hidden = hidden; resizeHandle.hidden = hidden;
+  event.currentTarget.textContent = hidden ? 'Show results' : 'Hide results';
+  event.currentTarget.setAttribute('aria-expanded', String(!hidden));
+  window.dispatchEvent(new Event('resize'));
+});
+
 // --- Tab switching ---
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
